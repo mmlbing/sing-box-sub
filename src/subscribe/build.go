@@ -46,7 +46,7 @@ func BuildSingBoxConfig(subURLs []string, tmplPath string) (map[string]interface
 	}
 
 	if tmplPath == "" {
-		tmplPath = "templates/momo.json"
+		return nil, fmt.Errorf("template path is required")
 	}
 
 	tmpl, err := template.GetTemplate(tmplPath)

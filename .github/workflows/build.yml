@@ -2,10 +2,7 @@ name: Build OpenWrt ipk
 
 on:
   push:
-    branches: [master, main]
     tags: ["v*"]
-  pull_request:
-    branches: [master, main]
   workflow_dispatch:
 
 jobs:
@@ -13,16 +10,16 @@ jobs:
     strategy:
       matrix:
         include:
-          - arch: aarch64_cortex-a72
+          - arch: aarch64_cortex-a72-openwrt-24.10
             goarch: arm64
             goarm: ""
-          - arch: aarch64_cortex-a53
+          - arch: aarch64_cortex-a53-openwrt-24.10
             goarch: arm64
             goarm: ""
-          - arch: arm_cortex-a7_neon-vfpv4
+          - arch: arm_cortex-a7_neon-vfpv4-openwrt-24.10
             goarch: arm
             goarm: "7"
-          - arch: x86_64
+          - arch: x86_64-openwrt-24.10
             goarch: amd64
             goarm: ""
 
@@ -63,7 +60,6 @@ jobs:
           mkdir -p "$STAGING/usr/bin"
           mkdir -p "$STAGING/etc/init.d"
           mkdir -p "$STAGING/etc/config"
-          mkdir -p "$STAGING/etc/sing-box-sub/templates"
 
           # Binary
           cp openwrt/sing-box-sub "$STAGING/usr/bin/"
@@ -75,9 +71,6 @@ jobs:
 
           # UCI config
           cp openwrt/sing-box-sub.config "$STAGING/etc/config/sing-box-sub"
-
-          # Default template
-          cp templates/momo.json "$STAGING/etc/sing-box-sub/templates/"
 
           # Build control
           mkdir -p ipk_control

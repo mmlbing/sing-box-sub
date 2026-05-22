@@ -120,7 +120,7 @@ func printHelp() {
 	fmt.Println()
 	fmt.Println("  Examples:")
 	fmt.Println("    sing-box-sub -u https://example.com/sub -t https://example.com/template.json -o config.json")
-	fmt.Println("    sing-box-sub -u https://example.com/sub -t /templates/default.json")
+	fmt.Println("    sing-box-sub -u https://example.com/sub -t /path/to/template.json")
 	fmt.Println()
 	fmt.Println("Usage 2 (HTTP server):")
 	fmt.Println("  sing-box-sub -d")

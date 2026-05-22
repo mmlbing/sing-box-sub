@@ -42,9 +42,6 @@ define Package/sing-box-sub/install
 
     $(INSTALL_DIR) $(1)/etc/config
     $(INSTALL_CONF) ./openwrt/sing-box-sub.config $(1)/etc/config/sing-box-sub
-
-    $(INSTALL_DIR) $(1)/etc/sing-box-sub/templates
-    $(INSTALL_DATA) ./templates/momo.json $(1)/etc/sing-box-sub/templates/
 endef
 
 $(eval $(call BuildPackage,sing-box-sub))
