@@ -104,7 +104,13 @@ jobs:
           # Cleanup
           rm -rf "$STAGING" ipk_control debian-binary control.tar.gz data.tar.gz
 
-      - name: Upload ipk to release
+      - name: Upload ipk artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sing-box-sub_${{ matrix.arch }}
+          path: "*.ipk"
+
+      - name: Upload to release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
