@@ -10,16 +10,16 @@ jobs:
     strategy:
       matrix:
         include:
-          - arch: aarch64_cortex-a72-openwrt-24.10
+          - arch: aarch64_cortex-a72
             goarch: arm64
             goarm: ""
-          - arch: aarch64_cortex-a53-openwrt-24.10
+          - arch: aarch64_cortex-a53
             goarch: arm64
             goarm: ""
-          - arch: arm_cortex-a7_neon-vfpv4-openwrt-24.10
+          - arch: arm_cortex-a7_neon-vfpv4
             goarch: arm
             goarm: "7"
-          - arch: x86_64-openwrt-24.10
+          - arch: x86_64
             goarch: amd64
             goarm: ""
 
@@ -104,8 +104,10 @@ jobs:
           # Cleanup
           rm -rf "$STAGING" ipk_control debian-binary control.tar.gz data.tar.gz
 
-      - name: Upload ipk artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload ipk to release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: sing-box-sub_${{ matrix.arch }}
-          path: "*.ipk"
+          files: "*.ipk"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
