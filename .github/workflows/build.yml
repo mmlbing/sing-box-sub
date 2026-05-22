@@ -1,0 +1,118 @@
+name: Build OpenWrt ipk
+
+on:
+  push:
+    branches: [master, main]
+    tags: ["v*"]
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - arch: aarch64_cortex-a72
+            goarch: arm64
+            goarm: ""
+          - arch: aarch64_cortex-a53
+            goarch: arm64
+            goarm: ""
+          - arch: arm_cortex-a7_neon-vfpv4
+            goarch: arm
+            goarm: "7"
+          - arch: x86_64
+            goarch: amd64
+            goarm: ""
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+
+      - name: Set version
+        id: version
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=$(date +%Y%m%d)-${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build binary
+        working-directory: src
+        run: |
+          GOOS=linux GOARCH=${{ matrix.goarch }} GOARM=${{ matrix.goarm }} \
+            go build -ldflags="-s -w -X main.buildVersion=${{ steps.version.outputs.VERSION }}" \
+            -o ../openwrt/sing-box-sub
+
+      - name: Package ipk
+        run: |
+          set -e
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          ARCH="${{ matrix.arch }}"
+          PKG="sing-box-sub"
+          OUT="${PKG}_${VERSION}_${ARCH}.ipk"
+          STAGING="ipk_staging"
+
+          rm -rf "$STAGING"
+          mkdir -p "$STAGING/usr/bin"
+          mkdir -p "$STAGING/etc/init.d"
+          mkdir -p "$STAGING/etc/config"
+          mkdir -p "$STAGING/etc/sing-box-sub/templates"
+
+          # Binary
+          cp openwrt/sing-box-sub "$STAGING/usr/bin/"
+          chmod 755 "$STAGING/usr/bin/sing-box-sub"
+
+          # Init script
+          cp openwrt/sing-box-sub.init "$STAGING/etc/init.d/sing-box-sub"
+          chmod 755 "$STAGING/etc/init.d/sing-box-sub"
+
+          # UCI config
+          cp openwrt/sing-box-sub.config "$STAGING/etc/config/sing-box-sub"
+
+          # Default template
+          cp templates/momo.json "$STAGING/etc/sing-box-sub/templates/"
+
+          # Build control
+          mkdir -p ipk_control
+          cat > ipk_control/control << EOF
+          Package: ${PKG}
+          Version: ${VERSION}
+          Architecture: ${ARCH}
+          Section: net
+          Priority: optional
+          Maintainer: sing-box-sub
+          Description: sing-box subscription converter daemon
+          EOF
+
+          # Create control.tar.gz
+          cd ipk_control
+          tar czf ../control.tar.gz ./control
+          cd ..
+
+          # Create data.tar.gz
+          cd "$STAGING"
+          tar czf ../data.tar.gz ./*
+          cd ..
+
+          # Create ipk
+          echo "2.0" > debian-binary
+          tar czf "$OUT" ./debian-binary ./control.tar.gz ./data.tar.gz
+
+          echo "Built: $OUT"
+          ls -lh "$OUT"
+
+          # Cleanup
+          rm -rf "$STAGING" ipk_control debian-binary control.tar.gz data.tar.gz
+
+      - name: Upload ipk artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sing-box-sub_${{ matrix.arch }}
+          path: "*.ipk"

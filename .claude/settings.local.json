@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:sing-box.sagernet.org)",
+      "Bash(go version *)",
+      "Bash(go mod *)",
+      "Bash(go build *)",
+      "Bash(go test *)",
+      "Bash(go run *)",
+      "Bash(python -c ' *)",
+      "Bash(ls \"G:\\\\\\\\System\\\\\\\\linux\\\\\\\\raspberry\\\\\\\\openwrt\\\\\\\\momo\\\\\\\\sing-box-sub\\\\\\\\src\\\\\\\\subscribe\\\\\\\\subscribe_example1.txt\")"
+    ]
+  }
+}
