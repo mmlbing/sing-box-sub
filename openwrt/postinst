@@ -1,0 +1,4 @@
+#!/bin/sh
+[ -n "$IPKG_INSTROOT" ] && exit 0
+/etc/init.d/sing-box-sub enable
+/etc/init.d/sing-box-sub start

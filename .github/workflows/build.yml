@@ -84,9 +84,11 @@ jobs:
           Description: sing-box subscription converter daemon
           EOF
 
-          # Create control.tar.gz
+          # Create control.tar.gz (with postinst)
           cd ipk_control
-          tar czf ../control.tar.gz ./control
+          cp ../openwrt/postinst ./postinst
+          chmod 755 ./postinst
+          tar czf ../control.tar.gz ./control ./postinst
           cd ..
 
           # Create data.tar.gz

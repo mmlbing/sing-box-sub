@@ -44,4 +44,11 @@ define Package/sing-box-sub/install
     $(INSTALL_CONF) ./openwrt/sing-box-sub.config $(1)/etc/config/sing-box-sub
 endef
 
+define Package/sing-box-sub/postinst
+#!/bin/sh
+[ -n "$$IPKG_INSTROOT" ] && exit 0
+/etc/init.d/sing-box-sub enable
+/etc/init.d/sing-box-sub start
+endef
+
 $(eval $(call BuildPackage,sing-box-sub))
