@@ -47,6 +47,7 @@
   ],
   "route": {
     "rules": [
+      {"inbound": "socks-in", "outbound": "🚀 默认代理"},
       {"action": "sniff", "sniffer": ["http", "tls", "quic", "dns"]},
       {"inbound": "dns-in", "action": "hijack-dns"},
       {"ip_is_private": true, "outbound": "🎯 全球直连"},
@@ -118,7 +119,7 @@
     {
       "tag": "socks-in",
       "type": "socks",
-      "listen": "::",
+      "listen": "0.0.0.0",
       "listen_port": 1080
     },
     {
