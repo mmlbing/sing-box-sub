@@ -76,7 +76,7 @@
       {"rule_set": "geoip-cn", "outbound": "🎯 全球直连"}
     ],
     "rule_set": [
-      {"tag": "custom-proxy", "type": "inline", "rules": [{"domain_suffix": ["longbridge.com"]}]},
+      {"tag": "custom-proxy", "type": "inline", "rules": [{"domain_suffix": ["lbkrs.com", "longbridge.app", "longbridge.global", "longportapp.com", "longbridge.com"]}]},
       {"tag": "custom-direct", "type": "inline", "rules": [{"domain_suffix": ["spphhnhg.top", "cloudfront.net"]}]},
       {"tag": "geosite-ai", "type": "remote", "format": "binary", "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/category-ai-!cn.srs", "download_detour": "🎯 全球直连"},
       {"tag": "geosite-youtube", "type": "remote", "format": "binary", "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/youtube.srs", "download_detour": "🎯 全球直连"},
